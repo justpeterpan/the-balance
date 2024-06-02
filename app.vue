@@ -1,6 +1,7 @@
 <template>
-  <div class="fle">
-    <input type="text" v-model="urlToBookmark" />
+  <div class="flex flex-row gap-2 m-10">
+    <UInput type="text" v-model="urlToBookmark" />
+    <UButton @click="submitUrl">Submit</UButton>
   </div>
 </template>
 
@@ -11,12 +12,9 @@ const urlToBookmark = defineModel('urlToBookmark', {
 })
 
 async function submitUrl() {
-  await $fetch('http://localhost:3000/bookmarks', {
+  await $fetch('/c', {
     method: 'POST',
     body: JSON.stringify({ url: urlToBookmark.value }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
   })
 }
 </script>

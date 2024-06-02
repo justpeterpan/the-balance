@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const url = readBody(event)
+  const { url } = await readBody(event)
   console.log(url)
   return url
 })
