@@ -1,17 +1,27 @@
 import * as cheerio from 'cheerio'
+import { bookmarksTable } from '~/server/db/schema'
 
 export default defineEventHandler(async (event) => {
-  const { url } = await readBody(event)
-  const site = await $fetch<string>(url)
-  return getMetaInfo(site)
+  try {
+    const { url } = await readBody(event)
+    const site = await $fetch<string>(url)
+
+    const newBookmark = getMetaInfo(site)
+
+    const result = await db.insert(bookmarksTable).values({ ...newBookmark, url })
+    console.log('result', result)
+    return { i: newBookmark.image,t: newBookmark.title, d: newBookmark.description }
+  } catch (e: any) {
+    throw createError({ statusCode: 400, statusMessage: e.message })
+  }
 })
 
 function getMetaInfo(site: string) {
   const $ = cheerio.load(site)
 
-  const i = $('meta[property="og:image"]').attr('content')
-  const d = $('meta[property="og:description"]').attr('content')
-  const t = $('meta[property="og:title"]').attr('content')
+  const image = $('meta[property="og:image"]').attr('content') ?? 'no image found'
+  const description = $('meta[property="og:description"]').attr('content') ?? 'no description found'
+  const title = $('meta[property="og:title"]').attr('content') ?? 'no title found'
 
-  return { i, d, t }
+  return { image, description, title }
 }

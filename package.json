@@ -7,16 +7,23 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:g": "drizzle-kit generate",
+    "db:m": "drizzle-kit migrate",
+    "db:s": "drizzle-kit studio"
   },
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
+    "drizzle-kit": "^0.22.1",
+    "drizzle-orm": "^0.31.0",
     "nuxt": "^3.11.2",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2"
   },
   "packageManager": "pnpm@9.1.4",
   "devDependencies": {
-    "@nuxt/ui": "^2.16.0"
+    "@nuxt/ui": "^2.16.0",
+    "@types/better-sqlite3": "^7.6.10",
+    "better-sqlite3": "^11.0.0"
   }
 }
