@@ -8,8 +8,7 @@ export default defineEventHandler(async (event) => {
 
     const newBookmark = getMetaInfo(site)
 
-    const result = await db.insert(bookmarksTable).values({ ...newBookmark, url })
-    console.log('result', result)
+    await db.insert(bookmarksTable).values({ ...newBookmark, url })
     return { i: newBookmark.image,t: newBookmark.title, d: newBookmark.description }
   } catch (e: any) {
     throw createError({ statusCode: 400, statusMessage: e.message })
