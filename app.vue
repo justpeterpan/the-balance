@@ -2,8 +2,9 @@
   <div>
     <nav class="px-10 pb-4 pt-10">
       <ul
-        class="flex flex-row-reverse justify-between items-center justify-items-center"
+        class="flex flex-row justify-between items-center justify-items-center min-h-[44px]"
       >
+        <li>the balance</li>
         <li v-if="user">
           <UButton
             icon="i-heroicons-arrow-right-start-on-rectangle"
@@ -15,6 +16,7 @@
         </li>
         <li v-else>
           <UButton
+            v-if="!$route.path.includes('/login')"
             icon="i-heroicons-arrow-right-start-on-rectangle"
             size="xl"
             variant="outline"

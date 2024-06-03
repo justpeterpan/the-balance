@@ -4,9 +4,8 @@ import { db, eq } from '../utils/db'
 import { usersTable } from '../db/schema'
 
 export default defineEventHandler(async (event) => {
-  const formData = await readFormData(event)
+  const { username, password } = await readBody(event)
 
-  const username = formData.get('username')
   if (
     typeof username !== 'string' ||
     username.length < 3 ||
@@ -18,7 +17,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const password = formData.get('password')
   if (
     typeof password !== 'string' ||
     password.length < 8 ||
