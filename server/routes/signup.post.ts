@@ -5,8 +5,7 @@ import { SqliteError } from 'better-sqlite3'
 import { usersTable } from '../db/schema'
 
 export default defineEventHandler(async (event) => {
-  const formData = await readFormData(event)
-  const username = formData.get('username')
+  const { username, password } = await readBody(event)
 
   if (
     typeof username !== 'string' ||
@@ -19,7 +18,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const password = formData.get('password')
   if (
     typeof password !== 'string' ||
     password.length < 8 ||
