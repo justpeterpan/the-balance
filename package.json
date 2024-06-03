@@ -13,9 +13,12 @@
     "db:s": "drizzle-kit studio"
   },
   "dependencies": {
+    "@lucia-auth/adapter-drizzle": "^1.0.7",
+    "@lucia-auth/adapter-sqlite": "^3.0.1",
     "cheerio": "1.0.0-rc.12",
     "drizzle-kit": "^0.22.1",
     "drizzle-orm": "^0.31.0",
+    "lucia": "^3.2.0",
     "nuxt": "^3.11.2",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2"
