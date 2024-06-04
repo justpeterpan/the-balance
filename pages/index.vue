@@ -47,6 +47,8 @@ definePageMeta({
   middleware: ['protected'],
 })
 
+const authUser = useAuthenticatedUser()
+
 const urlToBookmark = defineModel('urlToBookmark', {
   type: String,
   default: '',
@@ -65,7 +67,10 @@ async function submitUrl() {
   try {
     const { i, d, t } = await $fetch('/c', {
       method: 'POST',
-      body: JSON.stringify({ url: urlToBookmark.value }),
+      body: JSON.stringify({
+        url: urlToBookmark.value,
+        userId: authUser.value.id,
+      }),
     })
 
     desc.value = d

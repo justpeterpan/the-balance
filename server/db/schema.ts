@@ -9,6 +9,9 @@ export const bookmarksTable = sqliteTable('bookmarks', {
   image: text('image').notNull(),
   createdAt: text('createdAt').default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text('updatedAt').default(sql`CURRENT_TIMESTAMP`),
+  userId: text('user_id')
+    .notNull()
+    .references(() => usersTable.id),
 })
 
 export const usersTable = sqliteTable('users', {

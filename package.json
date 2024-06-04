@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "db:g": "drizzle-kit generate",
     "db:m": "drizzle-kit migrate",
-    "db:s": "drizzle-kit studio"
+    "db:s": "drizzle-kit studio",
+    "b:init": "pnpm db:g && pnpm db:m"
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.0.7",
