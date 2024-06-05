@@ -23,9 +23,21 @@
       v-if="bookmarks?.length"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-10"
     >
-      <UCard v-for="bookmark of bookmarks" :key="bookmark.id">
+      <UCard
+        v-for="bookmark of bookmarks"
+        :key="bookmark.id"
+        :draggable="true"
+        @dragstart="drag"
+      >
         <template #header>
-          <div class="truncate">{{ bookmark.title }}</div>
+          <div class="flex justify-between items-center">
+            <div class="truncate max-w-[85%]">{{ bookmark.title }}</div>
+            <UIcon
+              name="i-heroicons-bars-2"
+              class="text-xl cursor-pointer"
+              @click="drag"
+            />
+          </div>
         </template>
         <NuxtLink :to="bookmark.url" target="_blank">
           <img
@@ -117,6 +129,10 @@ async function onPaste(event: KeyboardEvent) {
   }
 }
 
+function drag(e: PointerEvent) {
+  console.log(e)
+}
+
 const { data: bookmarks, refresh } = await useFetch('/b', {
   method: 'GET',
 })
@@ -167,6 +183,7 @@ async function saveUrl() {
 
 onMounted(() => {
   window.addEventListener('keydown', onPaste)
+  window.addEventListener('dragstart', drag)
 })
 
 onUnmounted(() => {
