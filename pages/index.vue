@@ -43,20 +43,29 @@
       <UCard
         v-for="bookmark of bookmarks"
         :key="bookmark.id"
+        :draggable="true"
+        @dragstart="drag"
         :class="{
           hidden: hasNoActiveFilter(bookmark.tags),
         }"
       >
         <template #header>
-          <NuxtLink :to="bookmark.url" target="_blank"
-            ><div class="truncate">
-              {{
-                bookmark.title !== 'no title found'
-                  ? bookmark.title
-                  : bookmark.url
-              }}
-            </div></NuxtLink
-          >
+          <div class="flex justify-between items-center">
+            <NuxtLink :to="bookmark.url" target="_blank"
+              ><div class="truncate max-w-[85%]">
+                {{
+                  bookmark.title !== 'no title found'
+                    ? bookmark.title
+                    : bookmark.url
+                }}
+              </div></NuxtLink
+            >
+            <UIcon
+              name="i-heroicons-bars-2"
+              class="text-xl cursor-pointer"
+              @click="drag"
+            />
+          </div>
         </template>
         <NuxtLink :to="bookmark.url" target="_blank">
           <img
@@ -239,6 +248,10 @@ async function onPaste(event: KeyboardEvent) {
   }
 }
 
+function drag(e: PointerEvent) {
+  console.log(e)
+}
+
 const { data: allTags, refresh: refreshTags } = await useFetch('/tags', {
   method: 'GET',
 })
@@ -296,6 +309,7 @@ async function saveUrl() {
 
 onMounted(() => {
   window.addEventListener('keydown', onPaste)
+  window.addEventListener('dragstart', drag)
 })
 
 onUnmounted(() => {
