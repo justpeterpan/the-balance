@@ -9,5 +9,10 @@ export default defineNuxtConfig({
       database: true,
     },
   },
+  runtimeConfig: {
+    dbCredentials: {
+      url: process.env.DATABASE_URL,
+    },
+  },
   modules: ['@nuxt/ui'],
 })

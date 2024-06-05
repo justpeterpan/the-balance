@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    image: the-balance:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=./sqlite.db
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: ["node", ".output/server/index.mjs"]

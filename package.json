@@ -11,7 +11,8 @@
     "db:g": "drizzle-kit generate",
     "db:m": "drizzle-kit migrate",
     "db:s": "drizzle-kit studio",
-    "b:init": "pnpm db:g && pnpm db:m"
+    "db:init": "pnpm db:g && pnpm db:m",
+    "d:b": "docker build -t the-balance:latest ."
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.0.7",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@nuxt/ui": "^2.16.0",
     "@types/better-sqlite3": "^7.6.10",
-    "better-sqlite3": "^11.0.0"
+    "better-sqlite3": "^11.0.0",
+    "dotenv": "^16.4.5"
   }
 }

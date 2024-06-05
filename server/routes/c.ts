@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
     const site = await $fetch<string>(url)
 
     const newBookmark = getMetaInfo(site)
+    console.info(`User added a bookmark: ${url}`)
 
     return { i: newBookmark.image,t: newBookmark.title, d: newBookmark.description }
   } catch (e: any) {

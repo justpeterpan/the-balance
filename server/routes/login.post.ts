@@ -50,6 +50,9 @@ export default defineEventHandler(async (event) => {
   )
 
   if (!validPassword) {
+    console.error(
+      `User ${existingUser[0].username} entered an incorrect password`
+    )
     throw createError({
       message: 'Incorrect username or password',
       statusCode: 400,
@@ -57,6 +60,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const session = await lucia.createSession(existingUser[0].id, {})
+  console.info(`User ${existingUser[0].username} logged in`)
+  console.info(
+    `Session ${session.id} created for user ${existingUser[0].username}`
+  )
   appendHeader(
     event,
     'Set-Cookie',
