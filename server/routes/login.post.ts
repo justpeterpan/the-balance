@@ -38,17 +38,17 @@ export default defineEventHandler(async (event) => {
     .where(eq(usersTable.username, username))
     .limit(1)
 
-  if (!existingUser) {
+  if (!existingUser.length)
     throw createError({
       message: 'Incorrect username or password',
       statusCode: 400,
     })
-  }
 
   const validPassword = await new Argon2id().verify(
     existingUser[0].password,
     password
   )
+
   if (!validPassword) {
     throw createError({
       message: 'Incorrect username or password',

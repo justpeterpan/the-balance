@@ -25,7 +25,7 @@ async function login(e: FormSubmitEvent<Schema>) {
 
     await navigateTo('/')
   } catch (err: any) {
-    error.value = err.data?.me
+    error.value = err.data?.message || err.message
   }
 }
 </script>
@@ -49,5 +49,6 @@ async function login(e: FormSubmitEvent<Schema>) {
 
       <UButton type="submit"> Sign in </UButton>
     </UForm>
+    <UAlert v-if="error" :title="error" class="w-96 mt-10" />
   </div>
 </template>

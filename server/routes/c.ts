@@ -1,14 +1,12 @@
 import * as cheerio from 'cheerio'
-import { bookmarksTable } from '~/server/db/schema'
 
 export default defineEventHandler(async (event) => {
   try {
-    const { url, userId } = await readBody(event)
+    const { url } = await readBody(event)
     const site = await $fetch<string>(url)
 
     const newBookmark = getMetaInfo(site)
 
-    await db.insert(bookmarksTable).values({ ...newBookmark, url, userId })
     return { i: newBookmark.image,t: newBookmark.title, d: newBookmark.description }
   } catch (e: any) {
     throw createError({ statusCode: 400, statusMessage: e.message })
