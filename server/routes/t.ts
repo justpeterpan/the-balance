@@ -14,7 +14,6 @@ async function main(url: string) {
       },
     ],
   })
-  console.log(result.choices[0]?.message.content)
   return result.choices[0]?.message.content
 }
 

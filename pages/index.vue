@@ -136,12 +136,6 @@ const tagsAsString = ref('')
 
 function splitTags(tags: string | null) {
   if (!tags) return []
-  console.log(
-    tags
-      .replace(/[[\]"]+/g, '')
-      .split(',')
-      .map((tag) => tag.trim())
-  )
   return tags
     .replace(/[[\]"]+/g, '')
     .split(',')
@@ -167,7 +161,7 @@ async function getTagsFromAi(url: string) {
       .split(',')
       .map((tag) => tag.trim())
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 }
 
