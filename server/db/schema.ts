@@ -12,6 +12,7 @@ export const bookmarksTable = sqliteTable('bookmarks', {
   userId: text('user_id')
     .notNull()
     .references(() => usersTable.id),
+  tags: text('tags').default('[]'),
 })
 
 export const usersTable = sqliteTable('users', {

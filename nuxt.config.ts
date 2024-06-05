@@ -13,6 +13,9 @@ export default defineNuxtConfig({
     dbCredentials: {
       url: process.env.DATABASE_URL,
     },
+    openai: {
+      apiKey: process.env.OPENAI_API_KEY,
+    },
   },
   modules: ['@nuxt/ui'],
 })

@@ -23,6 +23,7 @@ CREATE TABLE bookmarks (
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
     updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
     user_id TEXT NOT NULL,
+    tags TEXT DEFAULT '[]',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

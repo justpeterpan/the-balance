@@ -49,6 +49,17 @@
         >
           {{ bookmark.description }}
         </div>
+        <template #footer>
+          <div v-if="splitTags(bookmark.tags).length" class="mb-4">
+            <UBadge
+              v-for="tag of splitTags(bookmark.tags)"
+              :label="tag"
+              :key="tag"
+              variant="subtle"
+              class="m-0.5"
+            />
+          </div>
+        </template>
       </UCard>
     </div>
     <div v-else>
@@ -71,9 +82,18 @@
             v-if="title"
             class="absolute bottom-0 rounded-b-lg w-full h-8 backdrop-blur bg-black/50"
           ></div>
-          <div v-if="title" class="absolute bottom-1 left-4">
+          <div v-if="title" class="absolute bottom-1 left-4 truncate w-96">
             {{ title }}
           </div>
+        </div>
+        <div class="mb-4">
+          <UBadge
+            v-for="tag of tagsAsArray"
+            :label="tag"
+            :key="tag"
+            variant="subtle"
+            class="m-0.5"
+          />
         </div>
         <UInput v-model="urlToBookmark" size="xl" :autofocusDelay="1000" />
         <div class="grid grid-cols-2 gap-2 mt-2">
@@ -111,6 +131,46 @@ function onCancel() {
   errorMsg.value = ''
 }
 
+const tagsAsArray = ref()
+const tagsAsString = ref('')
+
+function splitTags(tags: string | null) {
+  if (!tags) return []
+  console.log(
+    tags
+      .replace(/[[\]"]+/g, '')
+      .split(',')
+      .map((tag) => tag.trim())
+  )
+  return tags
+    .replace(/[[\]"]+/g, '')
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter((item) => item !== '')
+}
+
+async function getTagsFromAi(url: string) {
+  try {
+    const res = await $fetch('/t', {
+      method: 'POST',
+      body: JSON.stringify({
+        url,
+      }),
+    })
+
+    if (res) {
+      tagsAsString.value = res
+    }
+
+    return res
+      ?.replace(/[[\]"]+/g, '')
+      .split(',')
+      .map((tag) => tag.trim())
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 async function onPaste(event: KeyboardEvent) {
   if (
     !isOpen.value &&
@@ -126,6 +186,7 @@ async function onPaste(event: KeyboardEvent) {
       title.value = ''
       isLoading.value = true
       await getUrlInfo()
+      tagsAsArray.value = await getTagsFromAi(urlToBookmark.value)
       isLoading.value = false
     }
   }
@@ -167,6 +228,7 @@ async function saveUrl() {
         description: desc.value,
         image: image.value,
         userId: authUser.value.id,
+        tags: tagsAsString.value,
       }),
     })
 
