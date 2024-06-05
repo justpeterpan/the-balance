@@ -25,7 +25,15 @@
     >
       <UCard v-for="bookmark of bookmarks" :key="bookmark.id">
         <template #header>
-          <div class="truncate">{{ bookmark.title }}</div>
+          <NuxtLink :to="bookmark.url" target="_blank"
+            ><div class="truncate">
+              {{
+                bookmark.title !== 'no title found'
+                  ? bookmark.title
+                  : bookmark.url
+              }}
+            </div></NuxtLink
+          >
         </template>
         <NuxtLink :to="bookmark.url" target="_blank">
           <img
@@ -35,10 +43,16 @@
             class="object-cover w-full min-h-60 max-h-60 hover:ring-4 ring-primary rounded"
           />
         </NuxtLink>
-        <div class="mt-4">
+        <div
+          v-if="bookmark.description !== 'no description found'"
+          class="mt-4"
+        >
           {{ bookmark.description }}
         </div>
       </UCard>
+    </div>
+    <div v-else>
+      <div class="text-center">Start adding bookmarks</div>
     </div>
     <UModal
       v-model="isOpen"

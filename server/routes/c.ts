@@ -17,9 +17,12 @@ export default defineEventHandler(async (event) => {
 function getMetaInfo(site: string) {
   const $ = cheerio.load(site)
 
+  // todo take screenshot of site if no image found
   const image = $('meta[property="og:image"]').attr('content') ?? 'no image found'
+  // todo summarize content and generate description if no description found
   const description = $('meta[property="og:description"]').attr('content') ?? 'no description found'
-  const title = $('meta[property="og:title"]').attr('content') ?? 'no title found'
+  const title = $('meta[property="og:title"]').attr('content') ?? $('title').text()
+  // todo grab favicon
 
   return { image, description, title }
 }
