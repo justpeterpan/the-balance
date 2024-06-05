@@ -23,5 +23,8 @@ logs
 .env.*
 !.env.example
 
-# Local db files
+# Local dev files
 sqlite.db
+*.pem
+*.crt
+*.key
