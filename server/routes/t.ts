@@ -19,7 +19,6 @@ async function main(url: string, tags: string[]) {
 
 export default defineEventHandler(async (event) => {
   const allTags = await $fetch('/tags')
-  console.log('allTags', allTags)
   try {
     const { url } = await readBody(event)
     const completion: { tags: string; description: string } = await main(

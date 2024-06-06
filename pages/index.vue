@@ -72,7 +72,7 @@
       :ui="{
         overlay: { background: 'backdrop-blur' },
         container:
-          'flex min-h-full items-center sm:items-end sm:items-center justify-center text-center',
+          'flex min-h-full items-start sm:items-end sm:items-center justify-center text-center',
       }"
       class="top-0"
     >
@@ -88,7 +88,7 @@
             v-if="title"
             class="absolute bottom-0 rounded-b-lg w-full h-8 backdrop-blur bg-black/50"
           ></div>
-          <div v-if="title" class="absolute bottom-1 left-4 truncate w-96">
+          <div v-if="title" class="absolute bottom-1 left-4 truncate w-80">
             {{ title }}
           </div>
         </div>

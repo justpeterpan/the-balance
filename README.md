@@ -1,6 +1,7 @@
 <div align="center">
     <img src="./public/balance.png" width=64 height=64>
     <h1>The Balance</h1>
+    <img src="./screen.png">
 </div>
 
 WIP - app to bookmark sites and articles to read later.
