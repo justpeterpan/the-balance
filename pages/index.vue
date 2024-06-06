@@ -122,13 +122,19 @@ const urlToBookmark = ref('')
 const isOpen = ref(false)
 const isLoading = ref(false)
 
-function onCancel() {
-  isOpen.value = false
+function initValues() {
   urlToBookmark.value = ''
   desc.value = ''
   title.value = ''
   image.value = ''
   errorMsg.value = ''
+  tagsAsString.value = ''
+  tagsAsArray.value = undefined
+}
+
+function onCancel() {
+  isOpen.value = false
+  initValues()
 }
 
 const tagsAsArray = ref()
@@ -227,6 +233,7 @@ async function saveUrl() {
     })
 
     isOpen.value = false
+    initValues()
     toast.add({ title: message })
     await refresh()
   } catch (e) {
