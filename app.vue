@@ -4,7 +4,11 @@
       <ul
         class="flex flex-row justify-between items-center justify-items-center min-h-[44px]"
       >
-        <li><img src="/logo.webp" alt="logo" class="h-12" /></li>
+        <li>
+          <NuxtLink to="/"
+            ><img src="/logo.webp" alt="logo" class="h-12"
+          /></NuxtLink>
+        </li>
         <li v-if="user">
           <UButton
             icon="i-heroicons-arrow-right-start-on-rectangle"

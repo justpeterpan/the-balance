@@ -41,3 +41,5 @@ Variates depending on the OS you are using.
 - [ ] adapt docker-compose for remote deployment
 - [ ] create db based on drizzle schema
 - [ ] consider switching to caddy or traefik for reverse proxy
+- [ ] fix mobile save workflow
+- [ ] add filters for tags

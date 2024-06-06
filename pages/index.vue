@@ -1,5 +1,7 @@
 <template>
   <div class="grid my-10 justify-items-center gap-4 w-full">
+    <!-- todo add cardstack of categories, expanding on drag and adding bookmarkcards on drop -->
+    <!-- todo add 'create new category card' -->
     <UButton
       @click="isOpen = true"
       size="xl"
@@ -19,11 +21,32 @@
         @close="errorMsg = ''"
       />
     </div>
+    <div class="px-10 mb-4 place-items-center place-self-start">
+      <UBadge
+        v-for="tag of allTags"
+        :label="tag"
+        :key="tag"
+        class="m-0.5 cursor-pointer"
+        @click="addFilter(tag)"
+      />
+      <UBadge
+        label="clear filter"
+        variant="outline"
+        class="cursor-pointer"
+        @click="clearFilter"
+      />
+    </div>
     <div
       v-if="bookmarks?.length"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-10"
     >
-      <UCard v-for="bookmark of bookmarks" :key="bookmark.id">
+      <UCard
+        v-for="bookmark of bookmarks"
+        :key="bookmark.id"
+        :class="{
+          hidden: hasNoActiveFilter(bookmark.tags),
+        }"
+      >
         <template #header>
           <NuxtLink :to="bookmark.url" target="_blank"
             ><div class="truncate">
@@ -63,7 +86,12 @@
       </UCard>
     </div>
     <div v-else>
-      <div class="text-center">Start adding bookmarks</div>
+      <div class="text-center pb-4">Start adding bookmarks</div>
+      <div class="flex items-center justify-center gap-1">
+        <UKbd class="h-12 min-w-[48px] text-[24px]">{{ metaSymbol }}</UKbd>
+        +
+        <UKbd class="h-12 min-w-[48px] text-[24px]">V</UKbd>
+      </div>
     </div>
     <UModal
       v-model="isOpen"
@@ -88,7 +116,7 @@
         </div>
         <div class="mb-4">
           <UBadge
-            v-for="tag of tagsAsArray"
+            v-for="tag of splitTags(tags)"
             :label="tag"
             :key="tag"
             variant="subtle"
@@ -116,11 +144,31 @@ definePageMeta({
 })
 const authUser = useAuthenticatedUser()
 const toast = useToast()
+const { metaSymbol } = useShortcuts()
+const route = useRoute()
+const router = useRouter()
 
 const urlToBookmark = ref('')
 
 const isOpen = ref(false)
 const isLoading = ref(false)
+
+function clearFilter() {
+  router.push({ path: route.path })
+}
+
+function addFilter(tag: string) {
+  const query = { ...route.query }
+  if (!query.tag?.includes(tag)) {
+    query.tag = `${query.tag},${tag}`.replace(/undefined,/, '')
+  }
+  router.push({ path: route.path, query })
+}
+
+function hasNoActiveFilter(tags: string | null) {
+  if (route.query.tag === undefined) return false
+  return !splitTags(tags).some((tag: string) => route.query.tag?.includes(tag))
+}
 
 function initValues() {
   urlToBookmark.value = ''
@@ -128,8 +176,7 @@ function initValues() {
   title.value = ''
   image.value = ''
   errorMsg.value = ''
-  tagsAsString.value = ''
-  tagsAsArray.value = undefined
+  tags.value = ''
 }
 
 function onCancel() {
@@ -137,19 +184,19 @@ function onCancel() {
   initValues()
 }
 
-const tagsAsArray = ref()
-const tagsAsString = ref('')
+const tags = ref()
 
 function splitTags(tags: string | null) {
   if (!tags) return []
   return tags
-    .replace(/[[\]"]+/g, '')
     .split(',')
     .map((tag) => tag.trim())
     .filter((item) => item !== '')
 }
 
-async function getTagsFromAi(url: string) {
+async function getTagsAndDescriptionFromAi(
+  url: string
+): Promise<{ tags: string; description: string } | undefined> {
   try {
     const res = await $fetch('/t', {
       method: 'POST',
@@ -158,14 +205,10 @@ async function getTagsFromAi(url: string) {
       }),
     })
 
-    if (res) {
-      tagsAsString.value = res
+    return {
+      tags: res.tags,
+      description: res.description,
     }
-
-    return res
-      ?.replace(/[[\]"]+/g, '')
-      .split(',')
-      .map((tag) => tag.trim())
   } catch (e) {
     console.error(e)
   }
@@ -186,11 +229,19 @@ async function onPaste(event: KeyboardEvent) {
       title.value = ''
       isLoading.value = true
       await getUrlInfo()
-      tagsAsArray.value = await getTagsFromAi(urlToBookmark.value)
+      const tagsAndDescription = await getTagsAndDescriptionFromAi(
+        urlToBookmark.value
+      )
+      desc.value = tagsAndDescription?.description || ''
+      tags.value = tagsAndDescription?.tags || ''
       isLoading.value = false
     }
   }
 }
+
+const { data: allTags, refresh: refreshTags } = await useFetch('/tags', {
+  method: 'GET',
+})
 
 const { data: bookmarks, refresh } = await useFetch('/b', {
   method: 'GET',
@@ -228,7 +279,7 @@ async function saveUrl() {
         description: desc.value,
         image: image.value,
         userId: authUser.value.id,
-        tags: tagsAsString.value,
+        tags: tags.value,
       }),
     })
 
@@ -236,6 +287,7 @@ async function saveUrl() {
     initValues()
     toast.add({ title: message })
     await refresh()
+    await refreshTags()
   } catch (e) {
     isOpen.value = false
     errorMsg.value = 'Error happened'

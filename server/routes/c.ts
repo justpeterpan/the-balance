@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio'
 export default defineEventHandler(async (event) => {
   try {
     const { url } = await readBody(event)
+    // todo check if url is image format
     const site = await $fetch<string>(url)
 
     const newBookmark = getMetaInfo(site)
