@@ -38,7 +38,7 @@
     </div>
     <div
       v-if="bookmarks?.length"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-10"
+      class="place-self-start grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 px-10"
     >
       <UCard
         v-for="bookmark of bookmarks"
@@ -46,43 +46,17 @@
         :class="{
           hidden: hasNoActiveFilter(bookmark.tags),
         }"
+        :ui="{ body: { padding: 'px-4 py-5 sm:p-2' } }"
+        class="shadow-2xl"
       >
-        <template #header>
-          <NuxtLink :to="bookmark.url" target="_blank"
-            ><div class="truncate">
-              {{
-                bookmark.title !== 'no title found'
-                  ? bookmark.title
-                  : bookmark.url
-              }}
-            </div></NuxtLink
-          >
-        </template>
         <NuxtLink :to="bookmark.url" target="_blank">
           <img
             v-if="bookmark.image !== 'no image found'"
             :src="bookmark.image"
             alt=""
-            class="object-cover w-full min-h-60 max-h-60 hover:ring-4 ring-primary rounded"
+            class="object-cover object-left-top aspect-1 h-64 hover:ring-4 ring-primary rounded"
           />
         </NuxtLink>
-        <div
-          v-if="bookmark.description !== 'no description found'"
-          class="mt-4"
-        >
-          {{ bookmark.description }}
-        </div>
-        <template #footer>
-          <div v-if="splitTags(bookmark.tags).length" class="mb-4">
-            <UBadge
-              v-for="tag of splitTags(bookmark.tags)"
-              :label="tag"
-              :key="tag"
-              variant="subtle"
-              class="m-0.5"
-            />
-          </div>
-        </template>
       </UCard>
     </div>
     <div v-else>
@@ -95,7 +69,11 @@
     </div>
     <UModal
       v-model="isOpen"
-      :ui="{ overlay: { background: 'backdrop-blur' } }"
+      :ui="{
+        overlay: { background: 'backdrop-blur' },
+        container:
+          'flex min-h-full items-center sm:items-end sm:items-center justify-center text-center',
+      }"
       class="top-0"
     >
       <UCard class="grid gap-4">
@@ -293,6 +271,21 @@ async function saveUrl() {
     errorMsg.value = 'Error happened'
   }
 }
+
+watch(urlToBookmark, async (NewValue) => {
+  const urlRegex = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i
+  if (urlRegex.test(NewValue)) {
+    isLoading.value = true
+    await getUrlInfo()
+    const tagsAndDescription = await getTagsAndDescriptionFromAi(
+      urlToBookmark.value
+    )
+    desc.value = tagsAndDescription?.description || ''
+    tags.value = tagsAndDescription?.tags || ''
+    isLoading.value = false
+  }
+  console.log(NewValue)
+})
 
 onMounted(() => {
   window.addEventListener('keydown', onPaste)
