@@ -21,8 +21,10 @@
         @close="errorMsg = ''"
       />
     </div>
-    <div class="place-self-start px-10 mb-4">
-      <UCard class="w-64 h-32 grid place-items-center items-center shadow-md">
+    <div
+      class="place-self-start px-10 mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+    >
+      <UCard class="w-60 h-32 grid place-items-center items-center shadow-md">
         <UButton
           label="Create Category"
           variant="ghost"
@@ -37,8 +39,18 @@
                 'text-{color}-500 dark:text-{color}-400 dark:hover:bg-transparent hover:bg-transparent disabled:bg-transparent dark:disabled:bg-transparent',
             },
           }"
+          @click="categoryIsOpen = true"
         />
       </UCard>
+      <UCard
+        v-for="category of categories"
+        :key="category.name"
+        class="w-60 h-32 grid items-center shadow-md"
+        ><div class="flex justify-items-center gap-4 text-xl">
+          <div>{{ category.icon }}</div>
+          <div>{{ category.name }}</div>
+        </div></UCard
+      >
     </div>
     <div class="px-10 mb-4 place-items-center place-self-start">
       <UBadge
@@ -86,6 +98,40 @@
         <UKbd class="h-12 min-w-[48px] text-[24px]">V</UKbd>
       </div>
     </div>
+    <UModal
+      v-model="categoryIsOpen"
+      :ui="{
+        overlay: { background: 'backdrop-blur' },
+        container:
+          'flex min-h-full items-start sm:items-end sm:items-center justify-center text-center',
+      }"
+      class="top-0"
+    >
+      <UCard>
+        <div class="grid gap-2">
+          <UInput
+            v-model="categoryName"
+            size="xl"
+            placeholder="category name..."
+          />
+          <UInput
+            v-model="categoryIcon"
+            size="xl"
+            placeholder="category icon..."
+          />
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <UButton
+            label="cancel"
+            variant="outline"
+            size="xl"
+            block
+            @click="cancelCategory"
+          />
+          <UButton label="save" size="xl" block @click="createCategory" />
+        </div>
+      </UCard>
+    </UModal>
     <UModal
       v-model="isOpen"
       :ui="{
@@ -146,9 +192,42 @@ const route = useRoute()
 const router = useRouter()
 
 const urlToBookmark = ref('')
+const categoryName = defineModel('categoryName', { default: '' })
+const categoryIcon = defineModel('categoryIcon', { default: '' })
 
 const isOpen = ref(false)
+const categoryIsOpen = ref(false)
 const isLoading = ref(false)
+
+function cancelCategory() {
+  categoryIsOpen.value = false
+  categoryName.value = ''
+  categoryIcon.value = ''
+}
+
+async function createCategory() {
+  try {
+    const { message } = await $fetch('/category', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: categoryName.value,
+        icon: categoryIcon.value,
+        userId: authUser.value.id,
+      }),
+    })
+
+    categoryIsOpen.value = false
+    await refreshCategories()
+    categoryName.value = ''
+    categoryIcon.value = ''
+    toast.add({ title: message })
+  } catch (e) {
+    categoryIsOpen.value = false
+    categoryName.value = ''
+    categoryIcon.value = ''
+    toast.add({ title: 'Error happened' })
+  }
+}
 
 function clearFilter() {
   router.push({ path: route.path })
@@ -243,6 +322,13 @@ const { data: allTags, refresh: refreshTags } = await useFetch('/tags', {
 const { data: bookmarks, refresh } = await useFetch('/b', {
   method: 'GET',
 })
+
+const { data: categories, refresh: refreshCategories } = await useFetch(
+  '/category',
+  {
+    method: 'GET',
+  }
+)
 
 const desc = ref()
 const title = ref()
