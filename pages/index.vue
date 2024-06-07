@@ -21,6 +21,25 @@
         @close="errorMsg = ''"
       />
     </div>
+    <div class="place-self-start px-10 mb-4">
+      <UCard class="w-64 h-32 grid place-items-center items-center shadow-md">
+        <UButton
+          label="Create Category"
+          variant="ghost"
+          icon="i-heroicons-plus-circle-solid"
+          block
+          size="xl"
+          class="text-xl/5 w-10 text-left"
+          :ui="{
+            block: 'w-full flex justify-end',
+            variant: {
+              ghost:
+                'text-{color}-500 dark:text-{color}-400 dark:hover:bg-transparent hover:bg-transparent disabled:bg-transparent dark:disabled:bg-transparent',
+            },
+          }"
+        />
+      </UCard>
+    </div>
     <div class="px-10 mb-4 place-items-center place-self-start">
       <UBadge
         v-for="tag of allTags"
