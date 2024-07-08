@@ -4,6 +4,9 @@ export default defineNuxtConfig({
   experimental: {
     typedPages: true,
   },
+  future: {
+    compatibilityVersion: 4,
+  },
   nitro: {
     experimental: {
       database: true,

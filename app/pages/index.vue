@@ -78,16 +78,21 @@
           hidden: hasNoActiveFilter(bookmark.tags),
         }"
         :ui="{ body: { padding: 'px-4 py-5 sm:p-2' } }"
-        class="shadow-2xl"
+        class="shadow-2xl relative group"
       >
         <NuxtLink :to="bookmark.url" target="_blank">
           <img
             v-if="bookmark.image !== 'no image found'"
             :src="bookmark.image"
             alt=""
-            class="object-cover object-left-top aspect-1 h-64 hover:ring-4 ring-primary rounded"
+            class="object-cover object-left-top aspect-1 h-64 rounded"
           />
         </NuxtLink>
+        <div
+          class="absolute -translate-y-7 truncate group-hover:-translate-y-8 rounded-b-lg left-0 px-2 p-2 bg-white/0 group-hover:bg-white/100 w-full opacity-0 group-hover:opacity-100 duration-500 transition ease-in-out"
+        >
+          {{ bookmark.title }}
+        </div>
       </UCard>
     </div>
     <div v-else>
