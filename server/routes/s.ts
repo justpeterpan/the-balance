@@ -1,4 +1,4 @@
-import { bookmarksTable } from '~/server/db/schema'
+import { bookmarksTable } from '../db/schema'
 
 export default defineEventHandler(async (event) => {
   try {
