@@ -19,7 +19,7 @@
     "@lucia-auth/adapter-sqlite": "^3.0.2",
     "cheerio": "1.0.0-rc.12",
     "drizzle-kit": "^0.22.8",
-    "drizzle-orm": "^0.31.2",
+    "drizzle-orm": "^0.45.2",
     "lucia": "^3.2.0",
     "openai": "^4.52.3",
     "oslo": "^1.2.1",
